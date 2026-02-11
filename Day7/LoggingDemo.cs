@@ -1,30 +1,30 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace LoggingDemo
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // Configure Serilog
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
+                .WriteTo.File("logs.txt")
                 .CreateLogger();
 
             // Create Service Collection
             var services = new ServiceCollection();
 
-            services.AddLogging(builder =>
+            services.AddLogging(config =>
             {
-                builder.ClearProviders();
-                builder.AddSerilog(Log.Logger);
+                config.ClearProviders();
+                config.AddSerilog();
             });
 
-            // Register Services
             services.AddScoped<UserService>();
 
             // Build Service Provider
@@ -36,12 +36,9 @@ namespace LoggingDemo
             userService.CreateUser("John");
 
             Log.CloseAndFlush();
-
-            Console.ReadLine(); // Keeps console open
         }
     }
 
-    // ---------------- USER SERVICE ----------------
     public class UserService
     {
         private readonly ILogger<UserService> _logger;
@@ -57,7 +54,7 @@ namespace LoggingDemo
 
             try
             {
-                // Simulate user creation
+                // Simulating user creation
                 _logger.LogInformation("User {Name} created successfully", name);
             }
             catch (Exception ex)
