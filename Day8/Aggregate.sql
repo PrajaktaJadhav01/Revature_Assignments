@@ -1,0 +1,3 @@
+SELECT COUNT(*) FROM Employee;
+SELECT MAX(Age) FROM Student;
+SELECT AVG(Age) FROM Student;

@@ -1,0 +1,3 @@
+SELECT DeptID, COUNT(*)
+FROM Employee
+GROUP BY DeptID;
