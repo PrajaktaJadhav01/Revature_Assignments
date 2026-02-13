@@ -1,4 +1,4 @@
--- Check if table exists and delete it
+[-- Check if table exists and delete it
 IF OBJECT_ID('Stud') IS NOT NULL
 DROP TABLE Stud;
 
