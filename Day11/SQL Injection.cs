@@ -12,7 +12,9 @@ class Program
         {
             connection.Open();
 
-            string query = "SELECT CustomerId, CustomerName, Email FROM Customer";
+            string userInput = "1 OR 1=1";
+
+            string query = $"SELECT * FROM Customer WHERE CustomerId = {userInput}";
 
             using (SqlCommand command = new SqlCommand(query, connection))
             using (SqlDataReader reader = command.ExecuteReader())
@@ -21,8 +23,7 @@ class Program
                 {
                     Console.WriteLine(
                         $"Id: {reader["CustomerId"]}, " +
-                        $"Name: {reader["CustomerName"]}, " +
-                        $"Email: {reader["Email"]}");
+                        $"Name: {reader["CustomerName"]}");
                 }
             }
         }

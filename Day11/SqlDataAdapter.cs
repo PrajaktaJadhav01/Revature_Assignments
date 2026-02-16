@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Data.SqlClient;
 
 class Program
@@ -12,17 +13,18 @@ class Program
         {
             connection.Open();
 
-            string query = "SELECT CustomerId, CustomerName, Email FROM Customer";
+            string query = "SELECT * FROM Customer";
 
-            using (SqlCommand command = new SqlCommand(query, connection))
-            using (SqlDataReader reader = command.ExecuteReader())
+            using (SqlDataAdapter adapter = new SqlDataAdapter(query, connection))
             {
-                while (reader.Read())
+                DataTable table = new DataTable();
+                adapter.Fill(table);
+
+                foreach (DataRow row in table.Rows)
                 {
                     Console.WriteLine(
-                        $"Id: {reader["CustomerId"]}, " +
-                        $"Name: {reader["CustomerName"]}, " +
-                        $"Email: {reader["Email"]}");
+                        $"Id: {row["CustomerId"]}, " +
+                        $"Name: {row["CustomerName"]}");
                 }
             }
         }
