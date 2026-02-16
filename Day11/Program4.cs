@@ -10,52 +10,46 @@ namespace ConsoleApp14
             string connectionString =
                 "Server=localhost\\SQLEXPRESS;Database=CustomerManagementDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                try
-                {
-                    connection.Open();
-                    Console.WriteLine("Connection opened successfully.");
+            SqlConnection connection = new SqlConnection(connectionString);
 
-                    ParameterizedQueryDemo(connection);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error: " + ex.Message);
-                }
+            try
+            {
+                connection.Open();
+                Console.WriteLine("Connection opened successfully.\n");
+
+                // Call method
+                ExecuteReaderDemo(connection);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
 
             Console.ReadLine();
         }
 
-        static void ParameterizedQueryDemo(SqlConnection connection)
+        static void ExecuteReaderDemo(SqlConnection connection)
         {
-            string query = "SELECT CustomerId, CustomerName, Email, Phone FROM Customer WHERE CustomerName LIKE @Name";
+            string query = "SELECT CustomerId, CustomerName, Email, Phone FROM Customer";
 
-            using (SqlCommand command = new SqlCommand(query, connection))
+            SqlCommand command = new SqlCommand(query, connection);
+
+            SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
             {
-                string name = "Prajakta";   // change if you want
-
-                command.Parameters.AddWithValue("@Name", "%" + name + "%");
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            Console.WriteLine("Id: " + reader["CustomerId"] +
-                                              ", Name: " + reader["CustomerName"] +
-                                              ", Email: " + reader["Email"] +
-                                              ", Phone: " + reader["Phone"]);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("No customer found.");
-                    }
-                }
+                Console.WriteLine(
+                    "Id: " + reader["CustomerId"] +
+                    ", Name: " + reader["CustomerName"] +
+                    ", Email: " + reader["Email"] +
+                    ", Phone: " + reader["Phone"]);
             }
+
+            reader.Close();
         }
     }
 }
