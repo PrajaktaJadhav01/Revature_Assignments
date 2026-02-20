@@ -1,4 +1,4 @@
-namespace MYAPP
+namespace MyApp
 {
     public class Calculator
     {

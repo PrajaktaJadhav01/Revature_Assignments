@@ -1,6 +1,6 @@
 using System;
 
-namespace MYAPP
+namespace MyApp
 {
     class Program
     {

@@ -1,36 +1,58 @@
-using Xunit;
-using MYAPP;
+using MyApp;
 
-namespace MYAPP.Tests
+namespace MyApp.Tests;
+
+public class CalculatorTests
 {
-    public class CalculatorTests
+    [Theory]
+    [InlineData(2, 3, 5)]
+    [InlineData(0, 0, 0)]
+    [InlineData(-1, 1, 0)]
+    public void Add_TwoNumbers_GivesCorrectResult(int x, int y, int expectedResult)
     {
-        [Fact]
-        public void Add_Test()
-        {
-            var calc = new Calculator();
-            Assert.Equal(15, calc.Add(5, 10));
-        }
+        var calculator = new Calculator();
 
-        [Fact]
-        public void Subtract_Test()
-        {
-            var calc = new Calculator();
-            Assert.Equal(5, calc.Subtract(10, 5));
-        }
+        var actualResult = calculator.Add(x, y);
 
-        [Fact]
-        public void Multiply_Test()
-        {
-            var calc = new Calculator();
-            Assert.Equal(20, calc.Multiply(4, 5));
-        }
+        Assert.Equal(expectedResult, actualResult);
+    }
 
-        [Fact]
-        public void Divide_Test()
-        {
-            var calc = new Calculator();
-            Assert.Equal(5, calc.Divide(20, 4));
-        }
+    [Theory]
+    [InlineData(2, 3, -1)]
+    [InlineData(0, 0, 0)]
+    [InlineData(-1, 1, -2)]
+    public void Subtract_TwoNumbers_GivesCorrectResult(int x, int y, int expectedResult)
+    {
+        var calculator = new Calculator();
+
+        var actualResult = calculator.Subtract(x, y);
+
+        Assert.Equal(expectedResult, actualResult);
+    }
+
+    [Theory]
+    [InlineData(2, 3, 6)]
+    [InlineData(0, 5, 0)]
+    [InlineData(-2, 3, -6)]
+    public void Multiply_TwoNumbers_GivesCorrectResult(int x, int y, int expectedResult)
+    {
+        var calculator = new Calculator();
+
+        var actualResult = calculator.Multiply(x, y);
+
+        Assert.Equal(expectedResult, actualResult);
+    }
+
+    [Theory]
+    [InlineData(6, 3, 2)]
+    [InlineData(10, 2, 5)]
+    [InlineData(-8, 2, -4)]
+    public void Divide_TwoNumbers_GivesCorrectResult(int x, int y, int expectedResult)
+    {
+        var calculator = new Calculator();
+
+        var actualResult = calculator.Divide(x, y);
+
+        Assert.Equal(expectedResult, actualResult);
     }
 }
