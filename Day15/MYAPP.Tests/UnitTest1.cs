@@ -25,5 +25,12 @@ namespace MYAPP.Tests
             var calc = new Calculator();
             Assert.Equal(20, calc.Multiply(4, 5));
         }
+
+        [Fact]
+        public void Divide_Test()
+        {
+            var calc = new Calculator();
+            Assert.Equal(5, calc.Divide(20, 4));
+        }
     }
 }
