@@ -1,4 +1,5 @@
 using MyApp;
+using MYAPP;
 
 namespace MyApp.Tests;
 
