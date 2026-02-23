@@ -1,40 +1,52 @@
-using System;
-using System;
-
 namespace MYAPP
 {
-    public class Order
+    public interface IOrderRepository
     {
-        public string Email { get; set; }
+        void Save(Order order);
     }
 
-    public class OrderRepository
+    public interface IEmailSender
+    {
+        void Send(string email, string message);
+    }
+
+    public class Order
+    {
+        public string Email { get; set; } = string.Empty;
+    }
+
+    public class OrderRepository : IOrderRepository
     {
         public void Save(Order order)
         {
-            Console.WriteLine($"Order saved for {order.Email}");
         }
     }
 
-    public class EmailSender
+    public class EmailSender : IEmailSender
     {
         public void Send(string email, string message)
         {
-            Console.WriteLine($"Email sent to {email}: {message}");
         }
     }
 
-    public class OrderProgram
+    public class OrderService
     {
-        public static void Run()
+        private readonly IOrderRepository _repository;
+        private readonly IEmailSender _emailSender;
+
+        public OrderService(IOrderRepository repository, IEmailSender emailSender)
         {
-            var repo = new OrderRepository();
-            var email = new EmailSender();
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _emailSender = emailSender ?? throw new ArgumentNullException(nameof(emailSender));
+        }
 
-            var order = new Order { Email = "john.doe@orderscompany.com" };
+        public void PlaceOrder(Order order)
+        {
+            if (order == null)
+                throw new ArgumentNullException(nameof(order));
 
-            repo.Save(order);
-            email.Send(order.Email, "Order placed successfully!");
+            _repository.Save(order);
+            _emailSender.Send(order.Email, "Order placed successfully!");
         }
     }
 }
