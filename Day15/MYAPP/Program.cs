@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace MYAPP
 {
@@ -63,6 +64,33 @@ namespace MYAPP
         }
     }
 
+    // ================= WEATHER SERVICE =================
+
+    public interface IWeatherService
+    {
+        IEnumerable<double> GetTemperature(string city);
+    }
+
+    public class WeatherService : IWeatherService
+    {
+        public IEnumerable<double> GetTemperature(string city)
+        {
+            throw new Exception("City not found");
+        }
+    }
+
+    public class MockWeatherService : IWeatherService
+    {
+        public IEnumerable<double> GetTemperature(string city)
+        {
+            yield return 20;
+            yield return 21;
+            yield return 22;
+            yield return 23;
+            yield return 24;
+        }
+    }
+
     // ================= MAIN PROGRAM =================
 
     class Program
@@ -72,6 +100,7 @@ namespace MYAPP
             Console.WriteLine("Choose Option:");
             Console.WriteLine("1 - Run Calculator Tests");
             Console.WriteLine("2 - Run Order Program");
+            Console.WriteLine("3 - Run Weather Service Test");
 
             string choice = Console.ReadLine();
 
@@ -83,6 +112,10 @@ namespace MYAPP
             {
                 RunOrderProgram();
             }
+            else if (choice == "3")
+            {
+                RunWeatherTest();
+            }
             else
             {
                 Console.WriteLine("Invalid Choice");
@@ -91,23 +124,15 @@ namespace MYAPP
             Console.ReadLine();
         }
 
-        // Manually simulating unit tests
         static void RunCalculatorTests()
         {
             var calc = new Calculator();
 
             Console.WriteLine("Running Calculator Tests...\n");
 
-            // Addition Test
             Console.WriteLine(calc.Add(5, 10) == 15 ? "Add Test Passed" : "Add Test Failed");
-
-            // Subtraction Test
             Console.WriteLine(calc.Subtract(10, 5) == 5 ? "Subtract Test Passed" : "Subtract Test Failed");
-
-            // Multiplication Test
             Console.WriteLine(calc.Multiply(4, 5) == 20 ? "Multiply Test Passed" : "Multiply Test Failed");
-
-            // Division Test
             Console.WriteLine(calc.Divide(20, 4) == 5 ? "Divide Test Passed" : "Divide Test Failed");
 
             Console.WriteLine("\nCalculator Tests Completed.");
@@ -125,6 +150,30 @@ namespace MYAPP
             };
 
             orderService.PlaceOrder(order);
+        }
+
+        static void RunWeatherTest()
+        {
+            IWeatherService weatherService = new MockWeatherService();
+
+            try
+            {
+                var temps = weatherService.GetTemperature("Pune");
+
+                Console.WriteLine("Temperatures:");
+
+                foreach (var t in temps)
+                {
+                    Console.WriteLine(t);
+                }
+
+                Console.WriteLine("Weather Test Passed");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Weather Test Failed");
+            }
         }
     }
 }
