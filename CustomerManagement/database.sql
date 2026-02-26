@@ -9,8 +9,7 @@ BEGIN
     SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE CustomerManagementDB;
 END
-GO
-
+Go
 -- Create new database
 CREATE DATABASE CustomerManagementDB;
 GO
