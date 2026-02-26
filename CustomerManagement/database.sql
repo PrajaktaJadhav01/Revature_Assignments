@@ -9,7 +9,8 @@ BEGIN
     SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
     DROP DATABASE CustomerManagementDB;
 END
-Go
+GO
+
 -- Create new database
 CREATE DATABASE CustomerManagementDB;
 GO
@@ -19,7 +20,7 @@ USE CustomerManagementDB;
 GO
 
 
--- Segment table to store business segments
+-- Segment table
 CREATE TABLE Segment(
     SegmentId INT IDENTITY(1,1) PRIMARY KEY,
     SegmentName VARCHAR(100) NOT NULL,
@@ -28,7 +29,7 @@ CREATE TABLE Segment(
 GO
 
 
--- Main Customer table
+-- Customer table
 CREATE TABLE Customer(
     CustomerId INT IDENTITY(1,1) PRIMARY KEY,
     CustomerName VARCHAR(150) NOT NULL,
@@ -50,6 +51,18 @@ CREATE TABLE Customer(
     IsDeleted BIT DEFAULT 0,
     FOREIGN KEY (SegmentId) REFERENCES Segment(SegmentId),
     FOREIGN KEY (ParentCustomerId) REFERENCES Customer(CustomerId)
+);
+GO
+
+
+-- ORDERS TABLE (Added for your C# project)
+CREATE TABLE Orders(
+    OrderId INT IDENTITY(1,1) PRIMARY KEY,
+    ProductName VARCHAR(150),
+    Quantity INT,
+    TotalAmount DECIMAL(10,2),
+    CustomerId INT,
+    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId)
 );
 GO
 
@@ -120,7 +133,7 @@ VALUES
 GO
 
 
--- Insert customers (3 team-based customers)
+-- Insert customers
 INSERT INTO Customer
 (CustomerName, Email, Phone, Website, Industry, CompanySize,
  Classification, Type, SegmentId, AccountValue)
@@ -139,127 +152,10 @@ VALUES
 GO
 
 
--- Insert contact persons
-INSERT INTO ContactPerson (CustomerId, Name, Email, Phone, Title, IsPrimary)
+-- Insert Orders (Added)
+INSERT INTO Orders(ProductName, Quantity, TotalAmount, CustomerId)
 VALUES
-(1,'Harshali','harshali@revature.com','9000000001','HR',1),
-(2,'Prajakta','prajakta@gmail.com','9000000002','Owner',1),
-(3,'Tanaya','tanaya@gmail.com','9000000003','Manager',1);
+('Laptop',2,150000,1),
+('Consulting Package',1,50000,2),
+('Software License',5,200000,3);
 GO
-
-
--- Insert addresses
-INSERT INTO CustomerAddress
-(CustomerId, AddressType, Street, City, State, PostalCode, Country)
-VALUES
-(1,'Billing','Hinjewadi','Pune','Maharashtra','411057','India'),
-(2,'Primary','Baner','Pune','Maharashtra','411045','India'),
-(3,'Primary','Wakad','Pune','Maharashtra','411057','India');
-GO
-
-
--- Insert interactions
-INSERT INTO CustomerInteraction
-(CustomerId, InteractionType, Subject, Details)
-VALUES
-(1,'Meeting','Contract Discussion','Discussed enterprise contract'),
-(2,'Call','Initial Inquiry','Explained service offerings'),
-(3,'Email','Project Discussion','Discussed new client onboarding');
-GO
-
-
--- Procedure to get active customers
-GO
-CREATE OR ALTER PROCEDURE GetActiveCustomers
-AS
-BEGIN
-    SELECT * 
-    FROM Customer
-    WHERE IsDeleted = 0
-      AND Classification = 'Active';
-END;
-GO
-
-
--- Procedure to get lifetime value
-GO
-CREATE OR ALTER PROCEDURE GetCustomerLifetimeValue
-    @CustomerId INT
-AS
-BEGIN
-    SELECT CustomerName,
-           AccountValue AS LifetimeValue
-    FROM Customer
-    WHERE CustomerId = @CustomerId;
-END;
-GO
-
-
--- Procedure to calculate health score
-GO
-CREATE OR ALTER PROCEDURE CalculateCustomerHealthScore
-    @CustomerId INT
-AS
-BEGIN
-    DECLARE @InteractionCount INT;
-
-    SELECT @InteractionCount = COUNT(*)
-    FROM CustomerInteraction
-    WHERE CustomerId = @CustomerId;
-
-    UPDATE Customer
-    SET HealthScore =
-        CASE
-            WHEN @InteractionCount > 5 THEN 90
-            WHEN @InteractionCount BETWEEN 3 AND 5 THEN 75
-            ELSE 50
-        END
-    WHERE CustomerId = @CustomerId;
-
-    SELECT CustomerName, HealthScore
-    FROM Customer
-    WHERE CustomerId = @CustomerId;
-END;
-GO
-
-
--- Procedure to check duplicate email
-GO
-CREATE OR ALTER PROCEDURE CheckDuplicateCustomer
-    @Email VARCHAR(150)
-AS
-BEGIN
-    SELECT *
-    FROM Customer
-    WHERE Email = @Email;
-END;
-GO
-
-
--- Final output section
-PRINT 'Customer Table Data';
-SELECT * FROM Customer;
-
-PRINT 'Segment Table Data';
-SELECT * FROM Segment;
-
-PRINT 'Contact Person Data';
-SELECT * FROM ContactPerson;
-
-PRINT 'Customer Address Data';
-SELECT * FROM CustomerAddress;
-
-PRINT 'Customer Interaction Data';
-SELECT * FROM CustomerInteraction;
-
-PRINT 'Active Customers';
-EXEC GetActiveCustomers;
-
-PRINT 'Customer Lifetime Value';
-EXEC GetCustomerLifetimeValue 1;
-
-PRINT 'Customer Health Score';
-EXEC CalculateCustomerHealthScore 1;
-
-PRINT 'Duplicate Customer Check';
-EXEC CheckDuplicateCustomer 'info@revature.com';
