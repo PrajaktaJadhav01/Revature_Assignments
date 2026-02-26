@@ -1,12 +1,12 @@
--- Use master database
 USE master;
 GO
 
 -- Drop database if it already exists
 IF EXISTS (SELECT * FROM sys.databases WHERE name = 'CustomerManagementDB')
 BEGIN
-    ALTER DATABASE CustomerManagementDB 
+    ALTER DATABASE CustomerManagementDB
     SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+
     DROP DATABASE CustomerManagementDB;
 END
 GO
@@ -49,13 +49,14 @@ CREATE TABLE Customer(
     CreatedDate DATETIME DEFAULT GETDATE(),
     ModifiedDate DATETIME DEFAULT GETDATE(),
     IsDeleted BIT DEFAULT 0,
+
     FOREIGN KEY (SegmentId) REFERENCES Segment(SegmentId),
     FOREIGN KEY (ParentCustomerId) REFERENCES Customer(CustomerId)
 );
 GO
 
 
--- ORDERS TABLE (Added for your C# project)
+-- Orders table
 CREATE TABLE Orders(
     OrderId INT IDENTITY(1,1) PRIMARY KEY,
     ProductName VARCHAR(150),
@@ -67,67 +68,9 @@ CREATE TABLE Orders(
 GO
 
 
--- Contact persons table
-CREATE TABLE ContactPerson(
-    ContactPersonId INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerId INT,
-    Name VARCHAR(150),
-    Email VARCHAR(150),
-    Phone VARCHAR(20),
-    Title VARCHAR(100),
-    IsPrimary BIT DEFAULT 0,
-    IsDeleted BIT DEFAULT 0,
-    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId) ON DELETE CASCADE
-);
-GO
-
-
--- Customer address table
-CREATE TABLE CustomerAddress(
-    AddressId INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerId INT,
-    AddressType VARCHAR(50) 
-        CHECK (AddressType IN ('Billing','Shipping','Primary')),
-    Street VARCHAR(200) NOT NULL,
-    City VARCHAR(100) NOT NULL,
-    State VARCHAR(100) NOT NULL,
-    PostalCode VARCHAR(20) NOT NULL,
-    Country VARCHAR(100) NOT NULL,
-    IsDeleted BIT DEFAULT 0,
-    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId) ON DELETE CASCADE
-);
-GO
-
-
--- Customer interaction table
-CREATE TABLE CustomerInteraction(
-    InteractionId INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerId INT,
-    InteractionType VARCHAR(50) 
-        CHECK (InteractionType IN ('Call','Email','Meeting','Support Ticket')),
-    Subject VARCHAR(200),
-    Details VARCHAR(MAX),
-    InteractionDate DATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (CustomerId) REFERENCES Customer(CustomerId) ON DELETE CASCADE
-);
-GO
-
-
--- Customer audit table
-CREATE TABLE CustomerAudit(
-    AuditId INT IDENTITY(1,1) PRIMARY KEY,
-    CustomerId INT,
-    ChangedField VARCHAR(100),
-    OldValue VARCHAR(200),
-    NewValue VARCHAR(200),
-    ChangedDate DATETIME DEFAULT GETDATE()
-);
-GO
-
-
 -- Insert segments
 INSERT INTO Segment (SegmentName, Description)
-VALUES 
+VALUES
 ('Enterprise','Large Enterprise Customers'),
 ('SMB','Small Medium Business');
 GO
@@ -135,24 +78,15 @@ GO
 
 -- Insert customers
 INSERT INTO Customer
-(CustomerName, Email, Phone, Website, Industry, CompanySize,
- Classification, Type, SegmentId, AccountValue)
+(CustomerName, Email, Phone, Website, Industry, CompanySize, Classification, Type, SegmentId, AccountValue)
 VALUES
-('Revature','info@revature.com','9000000001',
- 'www.revature.com','IT Services','500+',
- 'Active','Business',1,500000),
-
-('Prajakta Consulting','prajakta@gmail.com','9000000002',
- 'www.prajaktaconsulting.com','Consulting','10-50',
- 'Prospect','Business',2,50000),
-
-('Tanaya Solutions','tanaya@gmail.com','9000000003',
- 'www.tanayasolutions.com','IT Services','100-200',
- 'Active','Business',1,200000);
+('Revature','info@revature.com','9000000001','www.revature.com','IT Services','500+','Active','Business',1,500000),
+('Prajakta Consulting','prajakta@gmail.com','9000000002','www.prajaktaconsulting.com','Consulting','10-50','Prospect','Business',2,50000),
+('Tanaya Solutions','tanaya@gmail.com','9000000003','www.tanayasolutions.com','IT Services','100-200','Active','Business',1,200000);
 GO
 
 
--- Insert Orders (Added)
+-- Insert Orders
 INSERT INTO Orders(ProductName, Quantity, TotalAmount, CustomerId)
 VALUES
 ('Laptop',2,150000,1),

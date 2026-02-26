@@ -1,24 +1,23 @@
--- Select your database
 USE CustomerManagementDB;
 
--- 1. Check all customers (Insert / Update / Delete verification)
+-- 1. Check all customers
 PRINT '--- ALL CUSTOMERS ---';
 SELECT * FROM Customer;
 
--- 2. Check specific customer update (example: phone change)
+-- 2. Check customer phone
 PRINT '--- CUSTOMER PHONE CHECK ---';
 SELECT CustomerId, CustomerName, Phone
 FROM Customer;
 
--- 3. Filter customers (Age > 25)
-PRINT '--- FILTER CUSTOMERS AGE > 25 ---';
-SELECT CustomerId, CustomerName, Age
+-- 3. Filter customers (AccountValue > 50000)
+PRINT '--- FILTER CUSTOMERS ACCOUNTVALUE > 50000 ---';
+SELECT CustomerId, CustomerName, AccountValue
 FROM Customer
-WHERE Age > 25;
+WHERE AccountValue > 50000;
 
 -- 4. Sort customers by name
 PRINT '--- SORT CUSTOMERS BY NAME ---';
-SELECT CustomerId, CustomerName, Age
+SELECT CustomerId, CustomerName, AccountValue
 FROM Customer
 ORDER BY CustomerName;
 
