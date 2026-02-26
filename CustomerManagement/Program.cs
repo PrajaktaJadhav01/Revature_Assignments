@@ -28,41 +28,75 @@ namespace CustomerManagement
                 Console.WriteLine("13. Exit");
 
                 Console.Write("\nEnter choice: ");
-                int choice = int.Parse(Console.ReadLine());
 
-                switch (choice)
+                if (!int.TryParse(Console.ReadLine(), out int choice))
                 {
-                    case 1:
+                    Console.WriteLine("Invalid Input");
+                    continue;
+                }
+
+                try
+                {
+                    // INSERT CUSTOMER
+                    if (choice == 1)
+                    {
                         Console.Write("Enter Name: ");
-                        string name = Console.ReadLine();
+                        string name = Console.ReadLine() ?? "";
 
                         Console.Write("Enter Email: ");
-                        string email = Console.ReadLine();
+                        string email = Console.ReadLine() ?? "";
 
                         var customer = new Customer
                         {
                             CustomerName = name,
-                            Email = email
+                            Email = email,
+                            Phone = "9999999999",
+                            Website = "www.company.com",
+                            Industry = "IT",
+                            CompanySize = "Medium",
+                            Classification = "Active",
+                            Type = "Individual",
+                            SegmentId = null,
+                            ParentCustomerId = null,
+                            AccountValue = 60000,
+                            HealthScore = 90,
+                            CreatedDate = DateTime.Now,
+                            ModifiedDate = DateTime.Now,
+                            IsDeleted = false
                         };
 
                         db.Customers.Add(customer);
                         db.SaveChanges();
 
                         Console.WriteLine("Customer Inserted Successfully");
-                        break;
+                    }
 
-                    case 2:
+                    // INSERT ORDER
+                    else if (choice == 2)
+                    {
                         Console.Write("Enter CustomerId: ");
-                        int cid = int.Parse(Console.ReadLine());
+                        if (!int.TryParse(Console.ReadLine(), out int cid))
+                        {
+                            Console.WriteLine("Invalid CustomerId");
+                            continue;
+                        }
 
                         Console.Write("Enter Product Name: ");
-                        string product = Console.ReadLine();
+                        string product = Console.ReadLine() ?? "";
 
                         Console.Write("Enter Quantity: ");
-                        int qty = int.Parse(Console.ReadLine());
+                        if (!int.TryParse(Console.ReadLine(), out int qty))
+                        {
+                            Console.WriteLine("Invalid Quantity");
+                            continue;
+                        }
 
                         Console.Write("Enter Total Amount: ");
-                        decimal amount = decimal.Parse(Console.ReadLine());
+                        if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+                        {
+                            Console.WriteLine("Invalid Amount");
+                            continue;
+                        }
 
                         var order = new Order
                         {
@@ -76,30 +110,41 @@ namespace CustomerManagement
                         db.SaveChanges();
 
                         Console.WriteLine("Order Inserted Successfully");
-                        break;
+                    }
 
-                    case 3:
+                    // VIEW CUSTOMERS
+                    else if (choice == 3)
+                    {
                         var customers = db.Customers.ToList();
 
                         foreach (var c in customers)
                         {
                             Console.WriteLine($"{c.CustomerId} | {c.CustomerName} | {c.Email}");
                         }
-                        break;
+                    }
 
-                    case 4:
-                        Console.Write("Enter Customer Id to Update: ");
-                        int updateId = int.Parse(Console.ReadLine());
+                    // UPDATE CUSTOMER
+                    else if (choice == 4)
+                    {
+                        Console.Write("Enter Customer Id: ");
 
-                        var cust = db.Customers.Find(updateId);
+                        if (!int.TryParse(Console.ReadLine(), out int id))
+                        {
+                            Console.WriteLine("Invalid Id");
+                            continue;
+                        }
+
+                        var cust = db.Customers.Find(id);
 
                         if (cust != null)
                         {
                             Console.Write("Enter New Name: ");
-                            cust.CustomerName = Console.ReadLine();
+                            cust.CustomerName = Console.ReadLine() ?? "";
 
                             Console.Write("Enter New Email: ");
-                            cust.Email = Console.ReadLine();
+                            cust.Email = Console.ReadLine() ?? "";
+
+                            cust.ModifiedDate = DateTime.Now;
 
                             db.SaveChanges();
 
@@ -109,9 +154,11 @@ namespace CustomerManagement
                         {
                             Console.WriteLine("Customer Not Found");
                         }
-                        break;
+                    }
 
-                    case 5:
+                    // FILTER
+                    else if (choice == 5)
+                    {
                         var filtered = db.Customers
                             .Where(c => c.AccountValue > 50000)
                             .ToList();
@@ -120,38 +167,44 @@ namespace CustomerManagement
                         {
                             Console.WriteLine($"{c.CustomerName} - {c.AccountValue}");
                         }
-                        break;
+                    }
 
-                    case 6:
+                    // SORT
+                    else if (choice == 6)
+                    {
                         var sorted = db.Customers
                             .OrderBy(c => c.CustomerName)
                             .ToList();
 
                         foreach (var c in sorted)
                         {
-                            Console.WriteLine($"{c.CustomerName}");
+                            Console.WriteLine(c.CustomerName);
                         }
-                        break;
+                    }
 
-                    case 7:
+                    // JOIN
+                    else if (choice == 7)
+                    {
                         var joinData = db.Customers
                             .Join(db.Orders,
-                            c => c.CustomerId,
-                            o => o.CustomerId,
-                            (c, o) => new
-                            {
-                                c.CustomerName,
-                                o.ProductName,
-                                o.TotalAmount
-                            }).ToList();
+                                c => c.CustomerId,
+                                o => o.CustomerId,
+                                (c, o) => new
+                                {
+                                    c.CustomerName,
+                                    o.ProductName,
+                                    o.TotalAmount
+                                }).ToList();
 
                         foreach (var item in joinData)
                         {
                             Console.WriteLine($"{item.CustomerName} | {item.ProductName} | {item.TotalAmount}");
                         }
-                        break;
+                    }
 
-                    case 8:
+                    // GROUPING
+                    else if (choice == 8)
+                    {
                         var group = db.Orders
                             .GroupBy(o => o.CustomerId)
                             .Select(g => new
@@ -165,9 +218,11 @@ namespace CustomerManagement
                         {
                             Console.WriteLine($"Customer {g.CustomerId} Orders: {g.TotalOrders} Amount: {g.TotalAmount}");
                         }
-                        break;
+                    }
 
-                    case 9:
+                    // EAGER LOADING
+                    else if (choice == 9)
+                    {
                         var eager = db.Customers
                             .Include(c => c.Orders)
                             .ToList();
@@ -181,35 +236,55 @@ namespace CustomerManagement
                                 Console.WriteLine($"   Order: {o.ProductName}");
                             }
                         }
-                        break;
+                    }
 
-                    case 10:
+                    // EXPLICIT LOADING
+                    else if (choice == 10)
+                    {
                         var explicitCustomer = db.Customers.FirstOrDefault();
 
-                        db.Entry(explicitCustomer)
-                          .Collection(c => c.Orders)
-                          .Load();
-
-                        Console.WriteLine($"Customer: {explicitCustomer.CustomerName}");
-
-                        foreach (var o in explicitCustomer.Orders)
+                        if (explicitCustomer != null)
                         {
-                            Console.WriteLine(o.ProductName);
-                        }
-                        break;
+                            db.Entry(explicitCustomer)
+                                .Collection(c => c.Orders)
+                                .Load();
 
-                    case 11:
+                            Console.WriteLine($"Customer: {explicitCustomer.CustomerName}");
+
+                            foreach (var o in explicitCustomer.Orders)
+                            {
+                                Console.WriteLine(o.ProductName);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No Customer Found");
+                        }
+                    }
+
+                    // LAZY LOADING
+                    else if (choice == 11)
+                    {
                         var lazy = db.Customers.FirstOrDefault();
 
-                        Console.WriteLine($"Customer: {lazy.CustomerName}");
-
-                        foreach (var o in lazy.Orders)
+                        if (lazy != null)
                         {
-                            Console.WriteLine(o.ProductName);
-                        }
-                        break;
+                            Console.WriteLine($"Customer: {lazy.CustomerName}");
 
-                    case 12:
+                            foreach (var o in lazy.Orders)
+                            {
+                                Console.WriteLine(o.ProductName);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No Customer Found");
+                        }
+                    }
+
+                    // PROJECTION
+                    else if (choice == 12)
+                    {
                         var projection = db.Customers
                             .Select(c => new
                             {
@@ -220,14 +295,26 @@ namespace CustomerManagement
                         {
                             Console.WriteLine(p.CustomerName);
                         }
-                        break;
+                    }
 
-                    case 13:
+                    else if (choice == 13)
+                    {
                         return;
+                    }
 
-                    default:
-                        Console.WriteLine("Invalid choice");
-                        break;
+                    else
+                    {
+                        Console.WriteLine("Invalid Choice");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine("Database Error: " + ex.InnerException.Message);
+                    }
                 }
             }
         }
