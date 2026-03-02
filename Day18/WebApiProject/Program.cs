@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using WebApiProject.Data;
 using WebApiProject.Mapping;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using WebApiProject.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +14,17 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
+// FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add AutoMapper
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Add DbContext and connection string
+// DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
@@ -25,7 +32,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// Configure middleware
+// Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,7 +41,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 
-// Map controllers
 app.MapControllers();
 
 app.Run();
