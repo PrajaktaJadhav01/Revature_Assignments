@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="CoRDemo/CoRDemo.csproj" />
+  <Project Path="MiddlewareDemo/MiddlewareDemo.csproj" />
+</Solution>
