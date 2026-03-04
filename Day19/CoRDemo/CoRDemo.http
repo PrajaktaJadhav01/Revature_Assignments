@@ -1,0 +1,6 @@
+@CoRDemo_HostAddress = http://localhost:5136
+
+GET {{CoRDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
