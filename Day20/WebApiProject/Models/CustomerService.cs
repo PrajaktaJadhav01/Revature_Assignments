@@ -15,7 +15,7 @@ namespace WebApiProject.Models
             return customers;
         }
 
-        public Customer GetCustomerById(int id)
+        public Customer? GetCustomerById(int id)
         {
             return customers.FirstOrDefault(c => c.Id == id);
         }

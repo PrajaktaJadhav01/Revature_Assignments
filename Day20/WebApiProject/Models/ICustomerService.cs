@@ -6,7 +6,7 @@ namespace WebApiProject.Models
     {
         List<Customer> GetAllCustomers();
 
-        Customer GetCustomerById(int id);
+        Customer? GetCustomerById(int id);
 
         void AddCustomer(Customer customer);
 

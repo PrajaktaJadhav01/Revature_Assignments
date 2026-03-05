@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace WebApiProject.DTOs
 {
     public class CustomerDTO

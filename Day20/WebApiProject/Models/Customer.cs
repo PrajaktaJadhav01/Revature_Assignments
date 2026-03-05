@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace WebApiProject.Models
 {
     public class Customer

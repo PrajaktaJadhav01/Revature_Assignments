@@ -1,9 +1,17 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+
 using WebApiProject.Data;
 using WebApiProject.Mapping;
+using WebApiProject.Validators;
+
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using WebApiProject.Validators;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
