@@ -1,0 +1,24 @@
+@SecurityJWTDemo_HostAddress = http://localhost:5000
+
+GET {{SecurityJWTDemo_HostAddress}}/customer
+Accept: application/json
+Authorization: Bearer token
+
+###
+
+POST {{SecurityJWTDemo_HostAddress}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "prajakta",
+  "password": "123"
+}
+
+###
+POST http://localhost:5028/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "sarah",
+  "password": "s@123"
+}
