@@ -8,8 +8,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// JWT Authentication
+// Authorization Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("MinimumAgePolicy", policy =>
+        policy.RequireClaim("age", "18", "19", "20", "21", "22", "23", "24", "25"));
+});
 
+// JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,7 +36,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Register TokenService
 builder.Services.AddScoped<TokenService>();
 
 var app = builder.Build();
@@ -43,10 +48,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();

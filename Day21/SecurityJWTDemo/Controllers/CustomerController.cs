@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/v1/[controller]")]
-[Authorize]
+[Authorize(Policy = "MinimumAgePolicy")]
 public class CustomerController : ControllerBase
 {
     [HttpGet]

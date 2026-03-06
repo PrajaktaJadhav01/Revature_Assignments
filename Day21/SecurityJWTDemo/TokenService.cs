@@ -10,7 +10,8 @@ public class TokenService
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role)
+            new Claim(ClaimTypes.Role, role),
+            new Claim("age", "25") // Added for policy
         };
 
         var key = new SymmetricSecurityKey(
