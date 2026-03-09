@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApiProject.Data;
 using WebApiProject.Models;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace WebApiProject.Controllers
 {
@@ -9,17 +11,34 @@ namespace WebApiProject.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IDistributedCache _cache;
 
-        public CustomerController(AppDbContext context)
+        public CustomerController(AppDbContext context, IDistributedCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         // GET: api/customer
         [HttpGet]
         public IActionResult GetCustomers()
         {
+            string cacheKey = "customerList";
+
+            var cachedCustomers = _cache.GetString(cacheKey);
+
+            if (!string.IsNullOrEmpty(cachedCustomers))
+            {
+                var customersFromCache = JsonSerializer.Deserialize<List<Customer>>(cachedCustomers);
+                return Ok(customersFromCache);
+            }
+
             var customers = _context.Customers.ToList();
+
+            var serializedCustomers = JsonSerializer.Serialize(customers);
+
+            _cache.SetString(cacheKey, serializedCustomers);
+
             return Ok(customers);
         }
 

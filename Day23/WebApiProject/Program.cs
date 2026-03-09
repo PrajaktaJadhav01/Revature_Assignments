@@ -26,8 +26,15 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CustomerValidator>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddResponseCaching();   // ✅ Added Caching Service
+builder.Services.AddResponseCaching();
 builder.Services.AddSwaggerGen();
+
+// ✅ Redis Cache Service Added
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = "localhost:6379";
+    options.InstanceName = "WebApiRedisCache";
+});
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -47,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseResponseCaching();   // ✅ Added Caching Middleware
+app.UseResponseCaching();
 
 app.UseAuthorization();
 
