@@ -1,4 +1,7 @@
 <Solution>
+  <Project Path="FactoryPatternDemo/FactoryPatternDemo.csproj" />
+  <Project Path="MongoDbDemo/MongoDbDemo.csproj" />
+  <Project Path="RepositoryAndUoWPattern/RepositoryAndUoWPattern.csproj" />
   <Project Path="SingletonDemo/SingletonDemo.csproj" />
   <Project Path="SOLIDDemo/SOLIDDemo.csproj" />
 </Solution>
