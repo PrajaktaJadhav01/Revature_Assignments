@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SingletonDemo/SingletonDemo.csproj" />
+  <Project Path="SOLIDDemo/SOLIDDemo.csproj" />
+</Solution>
