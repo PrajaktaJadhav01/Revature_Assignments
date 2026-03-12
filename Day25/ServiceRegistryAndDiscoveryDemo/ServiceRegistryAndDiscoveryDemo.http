@@ -1,0 +1,6 @@
+@ServiceRegistryAndDiscoveryDemo_HostAddress = http://localhost:5139
+
+GET {{ServiceRegistryAndDiscoveryDemo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
