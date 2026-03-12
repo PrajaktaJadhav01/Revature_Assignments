@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="ApiGatewayDemo/ApiGatewayDemo.csproj" />
+  <Project Path="ConsulDemo/ConsulDemo.csproj" />
+  <Project Path="HealthDemo/HealthDemo.csproj" />
   <Project Path="ServiceRegistryAndDiscoveryDemo/ServiceRegistryAndDiscoveryDemo.csproj" />
 </Solution>
