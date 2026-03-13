@@ -1,35 +1,29 @@
-﻿using System;
+﻿CustomerService customerService = new CustomerService();
 
-class Program
+// Create command
+var addCustomerCommand = new AddCustomerCommand(customerService);
+
+// Invoker
+var controller = new Controller(addCustomerCommand);
+
+// Execute command
+controller.PressButton();
+
+
+// Receiver (Actual business logic)
+public class CustomerService
 {
-    static void Main(string[] args)
+    public void AddCustomer()
     {
-        Light light = new Light();
+        Console.WriteLine("Customer added successfully.");
+    }
 
-        // Command
-        ICommand lightOnCommand = new LightOnCommand(light);
-
-        // Invoker
-        RemoteControl remoteControl = new RemoteControl(lightOnCommand);
-
-        // Execute command
-        remoteControl.PressButton();
+    public void DeleteCustomer()
+    {
+        Console.WriteLine("Customer deleted successfully.");
     }
 }
 
-// Receiver
-public class Light
-{
-    public void On()
-    {
-        Console.WriteLine("Light is on");
-    }
-
-    public void Off()
-    {
-        Console.WriteLine("Light is off");
-    }
-}
 
 // Command Interface
 public interface ICommand
@@ -37,28 +31,30 @@ public interface ICommand
     void Execute();
 }
 
-// Concrete Command
-public class LightOnCommand : ICommand
-{
-    private readonly Light _light;
 
-    public LightOnCommand(Light light)
+// Concrete Command
+public class AddCustomerCommand : ICommand
+{
+    private readonly CustomerService _service;
+
+    public AddCustomerCommand(CustomerService service)
     {
-        _light = light;
+        _service = service;
     }
 
     public void Execute()
     {
-        _light.On();
+        _service.AddCustomer();
     }
 }
 
+
 // Invoker
-public class RemoteControl
+public class Controller
 {
     private ICommand _command;
 
-    public RemoteControl(ICommand command)
+    public Controller(ICommand command)
     {
         _command = command;
     }
@@ -66,14 +62,5 @@ public class RemoteControl
     public void PressButton()
     {
         _command.Execute();
-    }
-}
-
-// Extra class
-public class AlexaRemote
-{
-    public void VoiceCommands()
-    {
-        Console.WriteLine("Voice activated remote control");
     }
 }
