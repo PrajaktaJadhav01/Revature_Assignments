@@ -1,15 +1,34 @@
 ﻿using System;
 
-// Using Command Pattern
-ICommand createCustomerCommand = new CreateCustomerCommand();
-createCustomerCommand.Execute();
-
-// Direct Method Call (violates Open/Closed principle)
-CreateCustomer();
-
-void CreateCustomer()
+class Program
 {
-    Console.WriteLine("Creating customer directly");
+    static void Main(string[] args)
+    {
+        Light light = new Light();
+
+        // Command
+        ICommand lightOnCommand = new LightOnCommand(light);
+
+        // Invoker
+        RemoteControl remoteControl = new RemoteControl(lightOnCommand);
+
+        // Execute command
+        remoteControl.PressButton();
+    }
+}
+
+// Receiver
+public class Light
+{
+    public void On()
+    {
+        Console.WriteLine("Light is on");
+    }
+
+    public void Off()
+    {
+        Console.WriteLine("Light is off");
+    }
 }
 
 // Command Interface
@@ -19,10 +38,42 @@ public interface ICommand
 }
 
 // Concrete Command
-public class CreateCustomerCommand : ICommand
+public class LightOnCommand : ICommand
 {
+    private readonly Light _light;
+
+    public LightOnCommand(Light light)
+    {
+        _light = light;
+    }
+
     public void Execute()
     {
-        Console.WriteLine("Create Customer");
+        _light.On();
+    }
+}
+
+// Invoker
+public class RemoteControl
+{
+    private ICommand _command;
+
+    public RemoteControl(ICommand command)
+    {
+        _command = command;
+    }
+
+    public void PressButton()
+    {
+        _command.Execute();
+    }
+}
+
+// Extra class
+public class AlexaRemote
+{
+    public void VoiceCommands()
+    {
+        Console.WriteLine("Voice activated remote control");
     }
 }
