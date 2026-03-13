@@ -20,6 +20,14 @@ namespace WebApiProject.Controllers
         public IActionResult GetCustomers()
         {
             var customers = _context.Customers.ToList();
+
+            Console.WriteLine("Customers fetched from database:");
+
+            foreach (var c in customers)
+            {
+                Console.WriteLine($"ID: {c.Id} | Name: {c.Name} | Email: {c.Email}");
+            }
+
             return Ok(customers);
         }
 
@@ -32,6 +40,8 @@ namespace WebApiProject.Controllers
             if (customer == null)
                 return NotFound();
 
+            Console.WriteLine($"Customer fetched: {customer.Id} - {customer.Name} - {customer.Email}");
+
             return Ok(customer);
         }
 
@@ -41,6 +51,8 @@ namespace WebApiProject.Controllers
         {
             _context.Customers.Add(customer);
             _context.SaveChanges();
+
+            Console.WriteLine($"Customer Added: {customer.Id} - {customer.Name} - {customer.Email}");
 
             return Ok(customer);
         }
@@ -59,6 +71,8 @@ namespace WebApiProject.Controllers
 
             _context.SaveChanges();
 
+            Console.WriteLine($"Customer Updated: {existingCustomer.Id} - {existingCustomer.Name}");
+
             return Ok(existingCustomer);
         }
 
@@ -73,6 +87,8 @@ namespace WebApiProject.Controllers
 
             _context.Customers.Remove(customer);
             _context.SaveChanges();
+
+            Console.WriteLine($"Customer Deleted: {customer.Id} - {customer.Name}");
 
             return Ok("Customer deleted successfully");
         }

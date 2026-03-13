@@ -4,6 +4,7 @@
   <Project Path="CommandPattern/CommandPattern.csproj" />
   <Project Path="ConsulDemo/ConsulDemo.csproj" />
   <Project Path="HealthDemo/HealthDemo.csproj" />
+  <Project Path="MediatRDemo/MediatRDemo.csproj" />
   <Project Path="ObserverDemo/ObserverDemo.csproj" />
   <Project Path="ServiceRegistryAndDiscoveryDemo/ServiceRegistryAndDiscoveryDemo.csproj" />
 </Solution>

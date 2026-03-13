@@ -4,7 +4,8 @@ using WebApiProject.Mapping;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using WebApiProject.Validators;
-using Consul;   // Consul added
+using Consul;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
-// Add Consul Client
+// ⭐ Add MediatR
+builder.Services.AddMediatR(typeof(Program));
+
+// Consul
 builder.Services.AddSingleton<IConsulClient, ConsulClient>(p =>
     new ConsulClient(config =>
     {
@@ -51,7 +55,6 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
-
 
 // Register service with Consul
 var consulClient = app.Services.GetRequiredService<IConsulClient>();
