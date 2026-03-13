@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="ApiGatewayDemo/ApiGatewayDemo.csproj" />
   <Project Path="CircuitBreakerDemo/CircuitBreakerDemo.csproj" />
+  <Project Path="CommandPattern/CommandPattern.csproj" />
   <Project Path="ConsulDemo/ConsulDemo.csproj" />
   <Project Path="HealthDemo/HealthDemo.csproj" />
   <Project Path="ServiceRegistryAndDiscoveryDemo/ServiceRegistryAndDiscoveryDemo.csproj" />
